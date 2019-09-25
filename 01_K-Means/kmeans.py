@@ -82,8 +82,6 @@ def main():
     # Run K-Means with K=3
     C, SSE, M = KMeans(data=X, K=3, inits=20)
 
-    print(M.shape)
-
     fig, ax =  plt.subplots(1, 2, figsize=(12,6))
     ax[0].scatter(X[:, 0], X[:, 1], c=y)
     ax[0].set_title("Original labeled data")
@@ -92,22 +90,26 @@ def main():
     ax[1].scatter(M[:, 0], M[:, 1], marker="*", s=200, c="black")
     ax[1].set_title("Clustered Data (K=3)")
     ax[1].set_xlabel(f"Within-Cluster Scatter: {round(SSE, 3)}")
+    plt.show()
 
+    # Run K-means for K=1,...,6 and make "elbow plot"
+    Cs = []
+    SSEs = []
+    for k in range(1, 7):
+        C, SSE, _ = KMeans(data=X, K=k, inits=5)
+        Cs.append(C)
+        SSEs.append(SSE)
+
+    fig, ax = plt.subplots(1, 1, figsize=(6,6))
+    ax.scatter(list(range(1, 7)), SSEs)
+    ax.set_xlabel("K")
+    ax.set_ylabel("Within-Cluster Scatter")
     plt.show()
 
 
 main()
 
-# Cs = []
-# SSEs = []
-# for k in range(1, 5):
-#   C, SSE = KMeans(data=X, K=k, iters=5)
-#   Cs.append(C)
-#   SSEs.append(SSE)
 
-# ax = sns.scatterplot(list(range(1, 5)), SSEs)
-# ax.set(xlabel = "K", ylabel = "Within-Cluster Scatter")
-# plt.show()
 
 
 # ######
