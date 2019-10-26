@@ -3,7 +3,7 @@
 ## Inspiration taken from Google Developers project https://bit.ly/2CLZpNj. ##
 ##                                                                          ##
 ## Author: Greg Holste                                                      ##
-## Last Modified: 10/23/19                                                  ##
+## Last Modified: 10/26/19                                                  ##
 ##############################################################################
 
 import pandas as pd
@@ -59,6 +59,8 @@ class DecisionTree:
                                  is the response variable (continuous or discrete)
         y_type (string)        : string denoting whether to build tree for regression or classification
         min_node_size (int)    : minimum terminal node size allowed before ending the tree-growing process
+        verbose (bool)         : boolean indicating whether to print info about every
+                                 split considered during the tree-growing process
 
     Attributes:
         data (pandas DataFrame): data frame of shape (n x (p+1)), where the first p
@@ -66,10 +68,13 @@ class DecisionTree:
                                  is the response variable (continuous or discrete)
         y_type (string)        : string denoting whether to build tree for regression or classification
         min_node_size (int)    : minimum terminal node size allowed before ending the tree-growing process
+        verbose (bool)         : boolean indicating whether to print info about every
+                                 split considered during the tree-growing process
         num_leaves (int)       : TODO -- number of terminal nodes in fitted tree
         depth (int)            : TODO -- number of "levels" of fitted tree (from root to deepest leaf)
+
     '''
-    def __init__(self, data, y_type='discrete', min_node_size=1):
+    def __init__(self, data, y_type='discrete', min_node_size=1, verbose=False):
         assert (y_type in ['discrete', 'continuous']), "y_type must be 'discrete' or 'continuous'"
         self.y_type = y_type
 
@@ -79,11 +84,12 @@ class DecisionTree:
             self.Q = RMSE
 
         self.c = min_node_size
+        self.verbose = verbose
         self.root_node = self.fit(data)
         self.num_leaves = 0  # TODO
         self.depth = 0       # TODO
 
-    def fit(self, df):
+    def fit(self, df, verbose=False):
         '''Function to grow a decision tree for classification or regression.
 
         Args:
@@ -94,6 +100,8 @@ class DecisionTree:
             root_node (DecisionNode): reference to root node of trained decision tree
         '''
         N = df.shape[0]
+        if self.verbose:
+            print(N, "samples at this node:")
 
         criteria = []
         Js = []
@@ -115,7 +123,8 @@ class DecisionTree:
                 tLs.append(tL)
                 tRs.append(tR)
 
-                # print(f"X{j+1} <= {s}: {wsum} | QL: {QL}, QR: {QR}, Q: {self.Q(df)}")
+                if self.verbose:
+                    print(f"X{j+1} <= {s}: {round(wsum, 5)} | QL: {round(QL, 3)}, QR: {round(QR, 3)}")
 
         criteria = np.array(criteria)
         tL_sizes = np.array([t.shape[0] for t in tLs])
