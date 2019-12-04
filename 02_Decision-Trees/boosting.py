@@ -2,12 +2,12 @@
 ## and Gradient Boosted Regression Trees (regression) using sklearn decision trees.   ##
 ##                                                                                    ##
 ## Author: Greg Holste                                                                ##
-## Last Modified: 11/17/19                                                            ##
+## Last Modified: 12/4/19                                                            ##
 ########################################################################################
 
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor
-from copy import deepcopy
+# from copy import deepcopy
 
 class AdaBoost:
     '''Implementation of AdaBoost.M1 algorithm for binary classification.
@@ -39,7 +39,6 @@ class AdaBoost:
         self.trained = False
 
     def fit(self):
-        ## CHECK X AND Y ARE PROPER ## 
         W = np.ones(self.X.shape[0]) * (1 / self.X.shape[0])  # initialize weights to 1/n
 
         for _ in range(self.M):
