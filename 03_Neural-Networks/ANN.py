@@ -29,10 +29,10 @@ class NeuralNet:
     '''Basic implementation of a feedforward neural network.
 
     Args:
-        sizes (list)   : list of all layer sizes (number of neurons):
-                           [n_features, n_hidden1, ..., n_hiddenk, n_out]
-        y_type (string): string denoting whether to perform regression or classification
-                           must be "discrete" or "continuous"
+        sizes (list)    : list of all layer sizes (number of neurons):
+                            [n_features, n_hidden1, ..., n_hiddenk, n_out]
+        y_type (string) : string denoting whether to perform regression or classification
+                            must be "discrete" or "continuous"
 
     Attributes:
         sizes (list)    : list of all layer sizes (number of neurons):
@@ -114,8 +114,18 @@ class NeuralNet:
         return output - y
 
     def train(self, data, batch_size, epochs=10, lr=0.1):
+        """Train neural network with stochastic gradient descent.
+
+        Args:
+            data (list)      : list of (x, y) tuples where each x is an ndarray of shape (p, 1)
+                               and each y is of shape (1, 1) if continuous and of shape (C, 1)
+                               if discrete, where p = # features and C = # output classes
+            batch_size (int) : number of samples in each mini-batch
+            epochs (int)     : number of epochs (full passes through the training set) to train
+            lr (float)       : learning rate ("step size") for weight updates in backprop
+        """
         n = len(data)
-        bar = tqdm.trange(epochs, desc='Bar desc', leave=True)
+        bar = tqdm.trange(epochs, desc="", leave=True)
         for e in bar:
             random.shuffle(data)
             mini_batches = [data[k:k + batch_size] for k in range(0, n, batch_size)]
@@ -153,6 +163,7 @@ class NeuralNet:
         return y_pred
 
     def predict_proba(self, X):
+        assert (y_type == "discrete"), "y_type must be 'discrete' to call predict_proba"
         if self.y_type == "discrete":
             y_pred = np.array([softmax(self.forward(x)) for x in X])
 
